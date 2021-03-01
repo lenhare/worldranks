@@ -7,26 +7,35 @@ import styles from "../styles/Home.module.css";
 
 export default function Home({ countries }) {
   const [keyword, setKeyword] = useState("");
+
   const filteredCountries = countries.filter(
     (country) =>
       country.name.toLowerCase().includes(keyword) ||
       country.region.toLowerCase().includes(keyword) ||
       country.subregion.toLowerCase().includes(keyword)
   );
+
   const onInputChange = (e) => {
     e.preventDefault();
+
     setKeyword(e.target.value.toLowerCase());
   };
+
   return (
     <Layout>
-      <div className={styles.counts}>
-        {" "}
-        {countries.length} países encontrados.
+      <div className={styles.inputContainer}>
+        <div className={styles.counts}>
+          {countries.length} países encontrados.
+        </div>
+
+        <div className={styles.input}>
+          <SearchInput
+            placeholder="Filtrar por nome, região ou subregião."
+            onChange={onInputChange}
+          />
+        </div>
       </div>
-      <SearchInput
-        placeholder="Filtro por nome, região ou subregião"
-        onChange={onInputChange}
-      />
+
       <CountriesTable countries={filteredCountries} />
     </Layout>
   );
@@ -35,6 +44,7 @@ export default function Home({ countries }) {
 export const getStaticProps = async () => {
   const res = await fetch("https://restcountries.eu/rest/v2/all");
   const countries = await res.json();
+
   return {
     props: {
       countries,
